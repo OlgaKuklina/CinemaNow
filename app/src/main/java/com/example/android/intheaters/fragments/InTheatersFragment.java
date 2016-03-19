@@ -1,47 +1,40 @@
 package com.example.android.intheaters.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.Toast;
 
-import com.example.android.intheaters.adapters.InTheatersRecyclerViewAdapter;
-import com.example.android.intheaters.data.Movie;
 import com.example.android.intheaters.R;
+import com.example.android.intheaters.adapters.RecyclerViewAdapter;
+import com.example.android.intheaters.asynctasks.FetchMovieListener;
+import com.example.android.intheaters.asynctasks.FetchMovieTask;
+import com.example.android.intheaters.data.MovieData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class InTheatersFragment extends Fragment {
-
-    // TODO: Customize parameter argument names
+    private static final String TAG = InTheatersFragment.class.getSimpleName();
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-    private List<Movie> movieList = new ArrayList<>();
-    private InTheatersRecyclerViewAdapter mAdapter;
+    private EndlessRecyclerOnScrollListener mListener;
+    private List<MovieData> movieDataList = new ArrayList<>();
+    private RecyclerViewAdapter mAdapter;
+    private RecyclerView recyclerView;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public InTheatersFragment() {
     }
-
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static InTheatersFragment newInstance(int columnCount) {
         InTheatersFragment fragment = new InTheatersFragment();
@@ -51,14 +44,6 @@ public class InTheatersFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,65 +53,22 @@ public class InTheatersFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView = (RecyclerView) view;
+            LinearLayoutManager manager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(manager);
+
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            Movie m1 = new Movie("Cinderella", 1);
-            Movie m2 = new Movie("War and Peace", 2);
-            Movie m3 = new Movie("Back to the Future", 3);
-            movieList.add(m1);
-            movieList.add(m2);
-            movieList.add(m3);
-            mAdapter = new InTheatersRecyclerViewAdapter(movieList);
+
+            mAdapter = new RecyclerViewAdapter(movieDataList);
+            mListener = new EndlessRecyclerOnScrollListener(manager, getActivity(), mAdapter);
             recyclerView.setAdapter(mAdapter);
+            recyclerView.addOnScrollListener(mListener);
+            mListener.onLoadMore(1);
+
         }
         return view;
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Movie movieItem);
-    }
-
-    private class InTheatersFragmentInteractionListener implements OnListFragmentInteractionListener {
-        private static final int PAGE_SIZE = 20;
-        private boolean loadingState = false;
-
-        @Override
-        public void onListFragmentInteraction(Movie movieItem) {
-
-        }
-    }
 }

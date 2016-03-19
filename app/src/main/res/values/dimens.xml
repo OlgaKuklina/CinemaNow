@@ -5,5 +5,6 @@
 
     <dimen name="mail_activity_list_column_width">406dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    ]
+    <dimen name="fab_margin">16dp</dimen>
+
 </resources>
