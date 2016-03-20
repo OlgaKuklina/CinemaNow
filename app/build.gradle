@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.android.intheaters"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
 
 }

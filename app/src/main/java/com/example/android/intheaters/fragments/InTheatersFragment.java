@@ -1,74 +1,77 @@
 package com.example.android.intheaters.fragments;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Toast;
 
 import com.example.android.intheaters.R;
 import com.example.android.intheaters.adapters.RecyclerViewAdapter;
-import com.example.android.intheaters.asynctasks.FetchMovieListener;
-import com.example.android.intheaters.asynctasks.FetchMovieTask;
-import com.example.android.intheaters.data.MovieData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InTheatersFragment extends Fragment {
     private static final String TAG = InTheatersFragment.class.getSimpleName();
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private EndlessRecyclerOnScrollListener mListener;
-    private List<MovieData> movieDataList = new ArrayList<>();
-    private RecyclerViewAdapter mAdapter;
+    private EndlessRecyclerOnScrollListener recyclerOnScrollListener;
+    private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
 
     public InTheatersFragment() {
     }
+
     @SuppressWarnings("unused")
     public static InTheatersFragment newInstance(int columnCount) {
         InTheatersFragment fragment = new InTheatersFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.v(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+        adapter = new RecyclerViewAdapter();
+        recyclerOnScrollListener = new EndlessRecyclerOnScrollListener(adapter);
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.in_theaters_list_fragment, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            LinearLayoutManager manager = new LinearLayoutManager(context);
-            recyclerView.setLayoutManager(manager);
-
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-            mAdapter = new RecyclerViewAdapter(movieDataList);
-            mListener = new EndlessRecyclerOnScrollListener(manager, getActivity(), mAdapter);
-            recyclerView.setAdapter(mAdapter);
-            recyclerView.addOnScrollListener(mListener);
-            mListener.onLoadMore(1);
-
+        Log.v(TAG, "onCreateView");
+        SwipeRefreshLayout view = (SwipeRefreshLayout) inflater.inflate(R.layout.in_theaters_list_fragment, container, false);
+        Context context = view.getContext();
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerOnScrollListener.setLinearLayoutManager(manager);
+        recyclerOnScrollListener.setView(view);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(recyclerOnScrollListener);
+        view.setOnRefreshListener(recyclerOnScrollListener);
+        if(adapter.getItemCount() == 0) {
+            recyclerOnScrollListener.loadNextPage();
         }
         return view;
     }
 
+    @Override
+    public void onPause() {
+        Log.v(TAG, "onPause");
+        super.onPause();
+        recyclerOnScrollListener.cancelAllActiveAsyncTasks();
+    }
 
-
+    @Override
+    public void onResume() {
+        Log.v(TAG, "onResume");
+        super.onResume();
+        recyclerOnScrollListener.restartAllCanceledTasks();
+    }
 }

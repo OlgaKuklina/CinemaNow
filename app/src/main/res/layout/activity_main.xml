@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/list"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment_main"
     android:name="com.example.android.intheaters.fragments.InTheatersFragment"
     tools:layout="@layout/in_theaters_list_fragment" android:layout_width="match_parent"
     android:layout_height="match_parent" />

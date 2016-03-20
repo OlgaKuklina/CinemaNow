@@ -17,7 +17,7 @@ import java.net.URL;
  * Created by olgakuklina on 2015-08-30.
  */
 public class JSONLoader {
-    private static final String APP_KEY = "hz54u92dhdukkcmxpmyr6rbk";
+    private static final String APP_KEY = "your API key";
     private static final String MOVIE_BASE_URI = "http://api.rottentomatoes.com/api/public/v1.0/lists/movies/in_theaters.json";
     private static final String TAG = JSONLoader.class.getSimpleName();
 
@@ -56,7 +56,6 @@ public class JSONLoader {
             Log.v(TAG, "Movie JSON String: " + movieJsonStr);
             JSONObject jObj = new JSONObject(movieJsonStr);
             return jObj;
-
         } catch (IOException | JSONException e) {
             Log.e(TAG, "Error ", e);
             return null;

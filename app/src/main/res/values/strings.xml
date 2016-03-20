@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">InTheaters</string>
-    <string name="title_activity_mail">In theaters</string>
+    <string name="title_activity">In Theaters</string>
+    <string name="no_imdb_images">No IMDB Images</string>
+    <string name="calculating">Calculating...</string>
+    <string name="failed_to_fetch">Failed to fetch</string>
+    <string name="filed_ti_fetch_imdb_data">Failed to fetch imdb data for movie id</string>
+    <string name="network_is_not_available_message">Network is not available</string>
+    <string name="imdb_img_count">IMDB images count = </string>
+    <string name="movie_id_title">Movie id:</string>
+    <string name="release_date_title">Release date:</string>
 </resources>
