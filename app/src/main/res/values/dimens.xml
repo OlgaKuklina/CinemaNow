@@ -4,7 +4,11 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="mail_activity_list_column_width">406dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">2dp</dimen>
+    <dimen name="tab_margin">10dp</dimen>
+    <dimen name="poster_size">100dp</dimen>
+    <dimen name="star_size">35dp</dimen>
+    <dimen name="title_size">65dp</dimen>
+    <dimen name="title_text_width">240dp</dimen>
 
 </resources>
